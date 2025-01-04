@@ -51,7 +51,7 @@ export class GameManager {
                 // find that particular game and call its makemove to updates that game's state
                 const game = this.games.find(game => game.player1 === socket || game.player2 === socket);
                 if(game) {
-                    game.makeMove(socket, message.move);
+                    game.makeMove(socket, message.payload);
                 }
             }
         })

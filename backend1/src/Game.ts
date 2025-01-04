@@ -30,6 +30,7 @@ export class Game {
         to: string,
         from: string
     }) {
+        console.log(move);
         // user should not be able to make move until its their turn
         if (this.board.turn() === 'w' && socket !== this.player1) {
             return;
