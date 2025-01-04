@@ -13,13 +13,13 @@ export class Game {
         this.player2 = player2;
         this.board = new Chess();
         this.startTime = new Date();
-        this.player1.emit(JSON.stringify({
+        this.player1.send(JSON.stringify({
             type: INIT_GAME,
             payload: {
                 color: "white"
             }
         }))
-        this.player2.emit(JSON.stringify({
+        this.player2.send(JSON.stringify({
             type: INIT_GAME,
             payload: {
                 color: "black"
@@ -31,10 +31,10 @@ export class Game {
         from: string
     }) {
         // user should not be able to make move until its their turn
-        if(this.board.moves.length % 2 === 0 && socket !== this.player1) {
+        if (this.board.turn() === 'w' && socket !== this.player1) {
             return;
         }
-        if(this.board.moves.length % 2 === 1 && socket !== this.player2) {
+        if (this.board.turn() === 'b' && socket !== this.player2) {
             return;
         }
 
@@ -42,18 +42,19 @@ export class Game {
         try {
             this.board.move(move);
         } catch (e) {
+            console.log("err: ", e);
             return;
         }
-        // LEARN: in websocket - emit is used to send an event to a specific client.
-        if(this.board.isGameOver()) {
-            if(this.board.isDraw()) {
-                this.player1.emit(JSON.stringify({
+        // LEARN: in websocket - send is used to send an event to a specific client.
+        if (this.board.isGameOver()) {
+            if (this.board.isDraw()) {
+                this.player1.send(JSON.stringify({
                     type: GAME_OVER,
                     payload: {
                         winner: 'draw'
                     }
                 }))
-                this.player2.emit(JSON.stringify({
+                this.player2.send(JSON.stringify({
                     type: GAME_OVER,
                     payload: {
                         winner: 'draw'
@@ -61,13 +62,13 @@ export class Game {
                 }))
                 return;
             }
-            this.player1.emit(JSON.stringify({
+            this.player1.send(JSON.stringify({
                 type: GAME_OVER,
                 payload: {
                     winner: this.board.turn() === 'w' ? 'black' : 'white'
                 }
             }))
-            this.player1.emit(JSON.stringify({
+            this.player1.send(JSON.stringify({
                 type: GAME_OVER,
                 payload: {
                     winner: this.board.turn() === 'w' ? 'black' : 'white'
@@ -78,17 +79,12 @@ export class Game {
 
         // if game not over, inform otherside about the move
         // if board is odd after making a move that means move is made by player 1 so inform about this to player2
-        // ERROR
-        if(this.board.moves.length % 2 === 1) {
-            this.player2.emit(JSON.stringify({
-                type: MOVE,
-                payload: move
-            }))
-        }else {
-            this.player1.emit(JSON.stringify({
-                type: MOVE,
-                payload: move
-            }))
-        }
+        // Notify the opponent of the move
+        const opponent = socket === this.player1 ? this.player2 : this.player1;
+        opponent.send(JSON.stringify({
+            type: MOVE,
+            payload: move
+        }));
+
     }
 }

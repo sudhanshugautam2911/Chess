@@ -40,7 +40,9 @@ export class GameManager {
                     const game = new Game(this.pendingUser, socket);
                     this.games.push(game);
                     this.pendingUser = null;
+                    console.log("Game started!");
                 } else {
+                    console.log("Pending User added");
                     this.pendingUser = socket;
                 }
             }
