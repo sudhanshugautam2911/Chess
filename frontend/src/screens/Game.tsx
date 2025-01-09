@@ -3,6 +3,7 @@ import { ChessBoard } from '../components/ChessBoard'
 import { useSocket } from '../hooks/useSocket'
 import { Chess } from 'chess.js'
 import { Link } from 'react-router';
+import { BoardOrientation } from 'react-chessboard/dist/chessboard/types';
 
 
 // TODO: move it, code repetition here
@@ -12,12 +13,12 @@ export const GAME_OVER = "game_over";
 
 const Game = () => {
     const socket = useSocket();
-    const [chess, setChess] = useState(new Chess());
-    const [board, setBoard] = useState(chess.board());
+    const [chess] = useState(new Chess());
+    // const [board, setBoard] = useState(chess.board());
     const [isStarted, setIsStarted] = useState(false)
     const [isFinding, setFinding] = useState(false)
     const [isOver, setIsOver] = useState("")
-    const [boardOrientation, setBoardOrientation] = useState('white')
+    const [boardOrientation, setBoardOrientation] = useState<BoardOrientation>('white')
     const [turn, setTurn] = useState('w');
 
     useEffect(() => {
@@ -30,7 +31,7 @@ const Game = () => {
                 case INIT_GAME:
                     setIsStarted(true);
                     setFinding(false);
-                    setBoard(chess.board());
+                    // setBoard(chess.board());
                     if (message.payload.color === 'black') {
                         setBoardOrientation('black');
                     }
@@ -41,12 +42,8 @@ const Game = () => {
                     const move = message.payload;
                     // Updating board current state whenever a move is made, but if I made a move then my opponent event will hit that means only my opponent move will be updated, so if I want to update my board then i will have to update at the same momement when I am making move so pass setBoard in ChessBoard
                     chess.move(move);
-                    setBoard(chess.board());
-                    // if (turn === 'white') {
-                    //     setTurn('black');
-                    // } else {
-                    //     setTurn('white');
-                    // }
+                    // setBoard(chess.board());
+                    
                     setTurn(chess.turn());
                     console.log("Move made!", message.payload);
                     break;
@@ -74,7 +71,7 @@ const Game = () => {
                             {/* Header */}
                             <div className="flex justify-between items-center border-b px-4 py-3">
                                 <h3 className="text-lg font-bold text-gray-800"></h3>
-                                <h3 className="text-lg font-bold text-white">{isOver[0].toUpperCase()+isOver.slice(1)} Won</h3>
+                                <h3 className="text-lg font-bold text-white">{isOver[0].toUpperCase() + isOver.slice(1)} Won</h3>
                                 <Link to="/">
                                     <button
                                         type="button"
@@ -110,7 +107,7 @@ const Game = () => {
 
                 <div className='h-full grid grid-cols-1 gap-5 md:grid-cols-6'>
                     <div className='col-span-4'>
-                        <ChessBoard chess={chess} setBoard={setBoard} socket={socket} boardOrientation={boardOrientation} setTurn={setTurn} />
+                        <ChessBoard chess={chess} socket={socket} boardOrientation={boardOrientation} setTurn={setTurn} />
                     </div>
                     <div className='h-full gap-10 col-span-2 flex flex-col items-center justify-center'>
                         {
@@ -127,11 +124,11 @@ const Game = () => {
                                 }} className='px-14 py-3 rounded-md text-lg font-bold bg-primary text-white border-b-4 border-secondary'>Play!</button>
                             )
                         }
-                        <h1 className='bg-secondary'>
-                            {turn === (boardOrientation === 'white' ? 'w' : 'b')
-                                ? "Your turn"
-                                : "Opponent's turn"}
-                        </h1>
+                        {isStarted && (
+                            <h1 className='bg-secondary p-2 rounded-md'>
+                                {turn === (boardOrientation === 'white' ? 'w' : 'b') ? "Your turn" : "Opponent's turn"}
+                            </h1>
+                        )}
                     </div>
                 </div>
             </div>

@@ -1,19 +1,13 @@
-import { Chess, Color, PieceSymbol, Square } from "chess.js";
-import { useState } from "react";
+import { Chess, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
+import { BoardOrientation } from "react-chessboard/dist/chessboard/types";
 
 
-interface SquareData {
-  square: Square;
-  type: PieceSymbol;
-  color: Color;
-}
 
-export const ChessBoard = ({ chess, setBoard, socket, boardOrientation, setTurn }: {
+export const ChessBoard = ({ chess, socket, boardOrientation, setTurn }: {
   chess: Chess;
-  setBoard: (board: (SquareData | null)[][]) => void;
   socket: WebSocket;
-  boardOrientation: string;
+  boardOrientation: BoardOrientation;
   setTurn: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   // const [from, setFrom] = useState<Square | null>(null);
@@ -64,13 +58,8 @@ export const ChessBoard = ({ chess, setBoard, socket, boardOrientation, setTurn 
         return false;
       }
 
-      // TODO: is won?
-      // if (chess.isGameOver()) {
-      //   alert(`Game is over you wins!`);
-      // }
-
       // If the move is valid, update the board locally
-      setBoard(chess.board());
+      // setBoard(chess.board());
       setTurn(chess.turn())
       socket.send(JSON.stringify({
         type: "move",
