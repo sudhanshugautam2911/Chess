@@ -25,6 +25,7 @@ const Game = () => {
         if (!socket) {
             return;
         }
+        
         socket.onmessage = (event) => {
             const message = JSON.parse(event.data);
             switch (message.type) {
