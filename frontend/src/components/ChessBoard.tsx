@@ -82,7 +82,7 @@ export const ChessBoard = ({ chess, socket, boardOrientation, setTurn }: {
 
       <Chessboard position={chess.fen()} onPieceDrop={onDrop}
         customBoardStyle={{
-          width: '600px', height: '600px', boxShadow: '0 5px 15px rgba(0, 0, 0, 0.5)'
+          width: 'min(90vw, 600px)', height: 'min(90vw, 600px)', boxShadow: '0 5px 15px rgba(0, 0, 0, 0.5)'
         }}
         boardOrientation={boardOrientation}
         customNotationStyle={{ fontSize: '14px' }} />

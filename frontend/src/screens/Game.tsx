@@ -106,11 +106,11 @@ const Game = () => {
                     </div>
                 )}
 
-                <div className='h-full grid grid-cols-1 gap-5 md:grid-cols-6'>
-                    <div className='col-span-4'>
+                <div className='h-full grid grid-cols-1 md:gap-5 md:grid-cols-6'>
+                    <div className='md:col-span-4'>
                         <ChessBoard chess={chess} socket={socket} boardOrientation={boardOrientation} setTurn={setTurn} />
                     </div>
-                    <div className='h-full gap-10 col-span-2 flex flex-col items-center justify-center'>
+                    <div className='h-full md:gap-10 md:col-span-2 flex flex-col items-center justify-center'>
                         {
                             isFinding ? (
                                 <div className='text-xl text-primary font-bold'>Finding game...</div>
