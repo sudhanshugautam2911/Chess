@@ -48,6 +48,8 @@ export class Game {
         }
         // LEARN: in websocket - send is used to send an event to a specific client.
         if (this.board.isGameOver()) {
+            console.log("OVER");
+            
             if (this.board.isDraw()) {
                 this.player1.send(JSON.stringify({
                     type: GAME_OVER,
@@ -63,13 +65,15 @@ export class Game {
                 }))
                 return;
             }
+            // console.log(this.board.turn() === 'w' ? 'black' : 'white');
+
             this.player1.send(JSON.stringify({
                 type: GAME_OVER,
                 payload: {
                     winner: this.board.turn() === 'w' ? 'black' : 'white'
                 }
             }))
-            this.player1.send(JSON.stringify({
+            this.player2.send(JSON.stringify({
                 type: GAME_OVER,
                 payload: {
                     winner: this.board.turn() === 'w' ? 'black' : 'white'
